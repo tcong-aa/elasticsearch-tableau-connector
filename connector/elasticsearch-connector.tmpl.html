@@ -3,17 +3,17 @@
 <head>
 <title>Elasticsearch Tableau Web Data Connector</title>
 
-<!--(if target dev)><!--> 
+<!--(if target dev)><!-->
   <link rel="stylesheet" href="bootstrap.css">
   <link rel="stylesheet" href="elasticsearch-connector.css">
 <!--<!(endif)-->
-<!--(if target dist)><!-->   
+<!--(if target dist)><!-->
   <link rel="stylesheet" href="elasticsearch-connector.min.css">
 <!--<!(endif)-->
 
   <script src="https://connectors.tableau.com/libs/tableauwdc-1.1.1.js" type="text/javascript"></script>
 
-<!--(if target dev)><!-->    
+<!--(if target dev)><!-->
   <script src="jquery.js" type="text/javascript"></script>
   <script src="bootstrap.js" type="text/javascript"></script>
   <script src="bootstrap3-typeahead.js" type="text/javascript"></script>
@@ -22,11 +22,11 @@
   <script src="elasticsearch-connector.js" type="text/javascript"></script>
   <script src="ace.js" type="text/javascript"></script>
 <!--<!(endif)-->
-<!--(if target dist)><!-->   
+<!--(if target dist)><!-->
   <script src="elasticsearch-connector.min.js" type="text/javascript"></script>
 <!--<!(endif)-->
 
-  
+
 
 <script type="text/javascript">
 
@@ -37,16 +37,16 @@
 
 
   <div class="container-fluid">
-    
+
     <div class="row">
       <div class="col-md-10 col-md-offset-1">
 
         <h2>Elasticsearch Tableau Web Data Connector</h2>
         <div class="es-logo"></div>
-        
+
       </div>
     </div>
-    
+
     <div id="divMessage" class="row" style="display: none">
       <div class="col-md-10 col-md-offset-1">
         <div class="alert alert-success">
@@ -61,7 +61,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="row no-tableau">
       <div class="col-md-10 col-md-offset-1">
         <div class="alert alert-info">
@@ -69,10 +69,10 @@
         </div>
       </div>
     </div>
-        
+
     <div class="row tableau">
       <div class="col-md-10 col-md-offset-1">
-   
+
         <form id="inputForm">
           <div class="form-group">
             <label for="inputConnectionName">Connection Name</label>
@@ -97,7 +97,7 @@
           </div>
           <div class="form-group">
             <label for="inputElasticsearchIndexTypeahead">Index Name</label>
-            <input class="form-control" id="inputElasticsearchIndexTypeahead" type="text" data-provide="typeahead" 
+            <input class="form-control" id="inputElasticsearchIndexTypeahead" type="text" data-provide="typeahead"
                    autocomplete="off" placeholder="Name of index like 'index1'">
                 <i class="index-icon glyphicon glyphicon-refresh icon-refresh-animate hide"></i>
             </input>
@@ -136,7 +136,7 @@
           </div>
           <div id="divQuery" class="form-group" style="display: none;">
             <label for="textElasticsearchQuery">Query</label>
-            
+
             <div id="divElasticsearchQueryEditor" class="query-editor">
             </div>
 
@@ -162,18 +162,20 @@
 
             <div id="divAggregationQuery" class="form-group" style="display: none;">
               <label for="textAggregationElasticsearchQuery">Query</label>
-              
+
               <div id="divElasticsearchAggQueryEditor" class="query-editor">
               </div>
 
+              <div id="inputParserFunction" class="query-editor">
+              </div>
             </div>
 
           </div>
 
 
 
-
           <button id="submitButton" type="submit" class="btn btn-default">Submit</button>
+          <button id="testButton" type="submit" class="btn btn-default">Test</button>
 
         </form>
       </div>

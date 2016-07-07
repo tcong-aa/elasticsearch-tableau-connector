@@ -5,3 +5,5 @@ public/
 dist/
 dist-tmp/
 .idea/
+*.swo
+*.swp

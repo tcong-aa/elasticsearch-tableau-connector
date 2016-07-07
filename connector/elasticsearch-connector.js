@@ -19,7 +19,9 @@
         startTime,
         endTime,
         queryEditor,
-        aggQueryEditor;
+        aggQueryEditor,
+        parserEditor;
+
 
     var addElasticsearchField = function (name, esType, format, hasLatLon) {
 
@@ -127,7 +129,7 @@
 
     //
     // Connector definition
-    // 
+    //
 
     var myConnector = tableau.makeConnector();
 
@@ -182,6 +184,7 @@
             console.log('[getTableData] getting aggregation response');
 
             getAggregationResponse();
+
         }
 
 
@@ -228,6 +231,11 @@
     $(document).ready(function () {
 
         console.log('[$.document.ready] fired...');
+
+            // $('.no-tableau').css('display', 'none');
+            // $('.tableau').css('display', 'block');
+            //
+            // initUIControls();
     });
 
     var initUIControls = function () {
@@ -292,6 +300,11 @@
         aggQueryEditor.setTheme("ace/theme/github");
         aggQueryEditor.getSession().setMode("ace/mode/json");
 
+
+        parserEditor = ace.edit("inputParserFunction");
+        parserEditor.setTheme("ace/theme/github");
+        parserEditor.getSession().setMode("ace/mode/javascript");
+
         $('#cbUseAggregationQuery').change(handleUseAggregationQueryCheckbox);
 
         var handleUseAggregationQueryCheckbox = function () {
@@ -303,12 +316,65 @@
             else {
                 $('#divAggregationQuery').css('display', 'none');
                 aggQueryEditor.setValue('');
+                parserEditor.setValue('');
             }
 
             updateTableauConnectionData();
         }
 
         handleUseAggregationQueryCheckbox.call($('#cbUseAggregationQuery'));
+
+        $("#testButton").click(function(e){
+
+            e.preventDefault();
+
+            var connectionData = getTableauConnectionData();
+
+            var aggsQuery;
+            try {
+                aggsQuery = JSON.parse(connectionData.elasticsearchAggQuery);
+            }
+            catch (err) {
+                return abort("Error parsing aggregation query, error: " + err);
+            }
+
+            cd = updateTableauConnectionData();
+
+            var connectionUrl = connectionData.elasticsearchUrl + '/' + connectionData.elasticsearchIndex + '/' +
+                connectionData.elasticsearchType + '/_search';
+
+            var requestData = JSON.parse(connectionData.elasticsearchAggQuery);
+
+            var xhr = $.ajax({
+                url: connectionUrl,
+                method: 'POST',
+                processData: false,
+                data: JSON.stringify(requestData),
+                dataType: 'json',
+                beforeSend: function (xhr) {
+                    if (connectionData.elasticsearchAuthenticate && tableau.username) {
+                        xhr.setRequestHeader("Authorization", "Basic " +
+                            btoa(tableau.username + ":" + tableau.password));
+                    }
+
+                },
+                success: function (data) {
+
+                  var func = new Function('data', cd.parserFunction);
+
+                  tableau.parserMethod = func;
+
+                  var result = func(data);
+
+                  console.log(result);
+
+                },
+                error: function (xhr, ajaxOptions, err) {
+                  console.log('error');
+                }
+            });
+
+        });
 
         $("#submitButton").click(function (e) { // This event fires when a button is clicked
             e.preventDefault();
@@ -407,7 +473,8 @@
                     var connectionName = connectionData.connectionName;
                     tableau.connectionName = connectionName ? connectionName : "Elasticsearch Datasource";
 
-                    updateTableauConnectionData();
+                    cd = updateTableauConnectionData();
+
 
                     startTime = moment();
                     $('#myPleaseWait').modal('show');
@@ -421,7 +488,6 @@
 
                     break;
             }
-
 
         });
 
@@ -856,15 +922,17 @@
             success: function (data) {
 
                 clearError();
+                // var result = processAggregationData(data);
 
-                var result = processAggregationData(data);
+                var func = new Function('data', connectionData.parserFunction);
+                var result = func(data);
 
                 tableau.dataCallback(result, null, false);
 
                 if (cb) {
                     cb(null, result);
                 }
-                
+
             },
             error: function (xhr, ajaxOptions, err) {
                 if (xhr.status == 0) {
@@ -887,7 +955,7 @@
         var rows = [];
         var currentRow = {};
 
-        visitAggregationResponseLevels(aggregations, rows, currentRow);        
+        visitAggregationResponseLevels(aggregations, rows, currentRow);
 
         return rows;
     };
@@ -1209,10 +1277,12 @@
         var esUrl = $('#inputElasticsearchUrl').val();
         var esIndex = $('#inputElasticsearchIndexTypeahead').val();
         var esType = $('#inputElasticsearchTypeTypeahead').val();
+
         var esQuery = queryEditor.getValue();
 
         var resultMode = $("input:radio[name='resultmode']:checked").val();
         var esAggQuery = aggQueryEditor.getValue();
+        var parserFunction = parserEditor.getValue();
 
         var connectionData = {
             connectionName: connectionName,
@@ -1231,6 +1301,7 @@
             dateFields: elasticsearchDateFields,
             geoPointFields: elasticsearchGeoPointFields,
             batchSize: max_iterations,
+            parserFunction: parserFunction,
             limit: limit
         };
 
@@ -1260,6 +1331,7 @@
 
         delete connectionData.elasticsearchUsername;
         delete connectionData.elasticsearchPassword;
+
 
         tableau.connectionData = JSON.stringify(connectionData);
 

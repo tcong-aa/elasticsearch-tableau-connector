@@ -3,15 +3,15 @@
             white-space: pre-wrap;
             border: solid lightgrey 1px;
         }
-        
+
         .tableau {
           display: none;
         }
-        
+
         .no-tableau {
           display: block;
         }
-		
+
 div.es-logo {
 	width:            469px;
 	height:           265px;
@@ -58,7 +58,8 @@ div.es-logo {
             display: none;
         }
 
-.query-editor{
+
+.query-editor {
     height: 200px;
     width: 100%;
     position: relative;
