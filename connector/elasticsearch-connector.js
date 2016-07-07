@@ -183,12 +183,9 @@
 
             console.log('[getTableData] getting aggregation response');
 
-            getAggregationResponse();
+            getAggregationResponse(lastRecordToken);
 
         }
-
-
-
     };
 
     myConnector.init = function () {
@@ -229,13 +226,7 @@
     //
 
     $(document).ready(function () {
-
         console.log('[$.document.ready] fired...');
-
-            // $('.no-tableau').css('display', 'none');
-            // $('.tableau').css('display', 'block');
-            //
-            // initUIControls();
     });
 
     var initUIControls = function () {
@@ -303,7 +294,7 @@
 
         parserEditor = ace.edit("inputParserFunction");
         parserEditor.setTheme("ace/theme/github");
-        parserEditor.getSession().setMode("ace/mode/javascript");
+        parserEditor.getSession().setMode("ace/mode/json");
 
         $('#cbUseAggregationQuery').change(handleUseAggregationQueryCheckbox);
 
@@ -875,7 +866,7 @@
         }
     };
 
-    var getAggregationResponse = function (cb) {
+    var getAggregationResponse = function (lastRecordToken) {
 
         var connectionData = JSON.parse(tableau.connectionData);
 
@@ -927,19 +918,19 @@
                 var func = new Function('data', connectionData.parserFunction);
                 var result = func(data);
 
-                tableau.dataCallback(result, null, false);
+                console.log('123123123123123123123------');
+                console.log(result);
 
-                if (cb) {
-                    cb(null, result);
-                }
+                tableau.headersCallback(result[0], result[1]);
+                tableau.dataCallback(result[2], lastRecordToken, false);
 
             },
             error: function (xhr, ajaxOptions, err) {
                 if (xhr.status == 0) {
-                    cb('Error creating Elasticsearch scroll window, unable to connect to host or CORS request was denied');
+                    console.log('Error creating Elasticsearch scroll window, unable to connect to host or CORS request was denied');
                 }
                 else {
-                    cb("Error creating Elasticsearch scroll window, status code:  " + xhr.status + '; ' + xhr.responseText + "\n" + err);
+                    console.log("Error creating Elasticsearch scroll window, status code:  " + xhr.status + '; ' + xhr.responseText + "\n" + err);
                 }
             }
         });
