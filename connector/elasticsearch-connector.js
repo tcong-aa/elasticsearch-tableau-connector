@@ -148,6 +148,8 @@
 
         console.log('getColumnHeaders called, headers: ' + _.pluck(connectionData.fields, 'name').join(', '));
         tableau.headersCallback(_.pluck(connectionData.fields, 'name'), _.pluck(connectionData.fields, 'dataType'));
+
+
     };
 
     var totalCount = 0,
@@ -918,10 +920,14 @@
                 var func = new Function('data', connectionData.parserFunction);
                 var result = func(data);
 
-                console.log('123123123123123123123------');
-                console.log(result);
-
                 tableau.headersCallback(result[0], result[1]);
+
+                _.each(result[0], function(data, index){
+                  elasticsearchFields.push({ name: result[0][index], dataType: result[1][index] });
+                });
+
+                updateTableauConnectionData();
+
                 tableau.dataCallback(result[2], lastRecordToken, false);
 
             },
