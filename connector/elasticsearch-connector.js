@@ -465,7 +465,21 @@
                     var connectionName = connectionData.connectionName;
                     tableau.connectionName = connectionName ? connectionName : "Elasticsearch Datasource";
 
-                    cd = updateTableauConnectionData();
+
+                    //////
+                    var headerNames = $('#inputHeaderNames').val();
+                    var headerTypes = $('#inputHeaderTypes').val();
+
+
+                    var names = headerNames.split(',');
+                    var types = headerNames.split(',');
+
+                    _.each(names, function(name, index){
+                      elasticsearchFields.push({ name: name, dataType: types[index] });
+                    });
+
+                    updateTableauConnectionData();
+                    //////
 
 
                     startTime = moment();
@@ -919,22 +933,7 @@
                 var func = new Function('data', connectionData.parserFunction);
                 var result = func(data);
 
-                // updateTableauConnectionData
-                //
-
-                var cd = JSON.parse(tableau.connectionData);
-                cd.fields = [];
-                _.each(result[0], function(data, index){
-                  cd.fields.push({ name: result[0][index], dataType: result[1][index] });
-                });
-
-                tableau.connectionData = JSON.stringify(cd);
-
-
-                //
-                tableau.headersCallback(result[0], result[1]);
-
-                tableau.dataCallback(result[2], lastRecordToken, false);
+                tableau.dataCallback(result, lastRecordToken, false);
 
             },
             error: function (xhr, ajaxOptions, err) {
