@@ -443,24 +443,24 @@
                         return abort("Error parsing aggregation query, error: " + err);
                     }
 
-                    var aggregations = aggsQuery.aggregations ? aggsQuery.aggregations : aggsQuery.aggs;
-                    if (!aggregations) {
-                        return abort("Aggregation query must include 'aggregations' or 'aggs' property");
-                    }
+                    // var aggregations = aggsQuery.aggregations ? aggsQuery.aggregations : aggsQuery.aggs;
+                    // if (!aggregations) {
+                    //     return abort("Aggregation query must include 'aggregations' or 'aggs' property");
+                    // }
 
-                    var bucketAggs = parseAggregations(aggregations, "buckets");
-
-                    var metricAggs = parseAggregations(aggregations, "metrics");
+                    // var bucketAggs = parseAggregations(aggregations, "buckets");
+                    //
+                    // var metricAggs = parseAggregations(aggregations, "metrics");
                     // TODO: Add validation that checks if we found metrics at any other level besides the deepest
 
-                    _.each(bucketAggs, function (bucketAgg) {
-                        addElasticsearchField(bucketAgg.name, bucketAgg.type, bucketAgg.format, null)
-                    });
-                    _.each(metricAggs, function (metricAgg) {
-                        addElasticsearchField(metricAgg.name, metricAgg.type, metricAgg.format, null)
-                    });
+                    // _.each(bucketAggs, function (bucketAgg) {
+                    //     addElasticsearchField(bucketAgg.name, bucketAgg.type, bucketAgg.format, null)
+                    // });
+                    // _.each(metricAggs, function (metricAgg) {
+                    //     addElasticsearchField(metricAgg.name, metricAgg.type, metricAgg.format, null)
+                    // });
 
-                    console.log('[submit] Number of header columns: ' + elasticsearchFields.length);
+                    // console.log('[submit] Number of header columns: ' + elasticsearchFields.length);
 
                     var connectionName = connectionData.connectionName;
                     tableau.connectionName = connectionName ? connectionName : "Elasticsearch Datasource";
