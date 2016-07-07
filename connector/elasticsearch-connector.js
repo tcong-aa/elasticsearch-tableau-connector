@@ -923,6 +923,7 @@
                 //
 
                 var cd = JSON.parse(tableau.connectionData);
+                cd.fields = [];
                 _.each(result[0], function(data, index){
                   cd.fields.push({ name: result[0][index], dataType: result[1][index] });
                 });
