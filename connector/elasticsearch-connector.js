@@ -930,7 +930,9 @@
 
                 tableau.connectionData = JSON.stringify(cd);
 
+
                 //
+                tableau.headersCallback(result[0], result[1]);
 
                 tableau.dataCallback(result[2], lastRecordToken, false);
 
