@@ -927,7 +927,7 @@
                   cd.fields.push({ name: result[0][index], dataType: result[1][index] });
                 });
 
-                tableau.connectionData = JSON.stringify(cb);
+                tableau.connectionData = JSON.stringify(cd);
 
                 //
 
