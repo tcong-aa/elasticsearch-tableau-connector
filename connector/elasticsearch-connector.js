@@ -472,7 +472,7 @@
 
 
                     var names = headerNames.split(',');
-                    var types = headerNames.split(',');
+                    var types = headerTypes.split(',');
 
                     _.each(names, function(name, index){
                       elasticsearchFields.push({ name: name, dataType: types[index] });
