@@ -927,6 +927,8 @@
                   cd.fields.push({ name: result[0][index], dataType: result[1][index] });
                 });
 
+                tableau.connectionData = JSON.stringify(cb);
+
                 //
 
                 tableau.dataCallback(result[2], lastRecordToken, false);
